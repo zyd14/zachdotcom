@@ -1,8 +1,11 @@
 import logging
 from logging.config import dictConfig
-from flask import has_request_context, request
+
+from flask import Flask, has_request_context, request
 from flask.logging import default_handler
-from flask import Flask
+from flask_bootstrap import Bootstrap
+
+from mysite import public
 
 dictConfig({
     'version': 1,
@@ -20,6 +23,7 @@ dictConfig({
     }
 })
 
+
 class RequestFormatter(logging.Formatter):
     def format(self, record):
         if has_request_context():
@@ -31,6 +35,7 @@ class RequestFormatter(logging.Formatter):
 
         return super().format(record)
 
+
 def create_app(config_object='mysite.settings'):
     app = Flask('Zachdotcom')
     app.config.from_object(config_object)
@@ -39,6 +44,17 @@ def create_app(config_object='mysite.settings'):
         '[%(levelname)s] in %(module)s: %(message)s'
     )
     default_handler.setFormatter(formatter)
-    print('')
+
+    register_exensions(app)
+    register_blueprints(app)
     return app
 
+def register_blueprints(app):
+    app.register_blueprint(public.views.blueprint)
+
+def register_exensions(app):
+    Bootstrap(app)
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run()
