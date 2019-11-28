@@ -5,6 +5,7 @@ dominate==2.4.0
 environs==6.1.0
 Flask==1.1.1
 Flask-Bootstrap==3.3.7.1
+flask-wtf==0.14.2
 importlib-metadata==0.23
 itsdangerous==1.1.0
 Jinja2==2.10.3

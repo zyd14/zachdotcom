@@ -1,5 +1,6 @@
 import logging
 from logging.config import dictConfig
+import os
 
 from flask import Flask, has_request_context, request, render_template
 from flask.logging import default_handler
@@ -44,6 +45,9 @@ def create_app(config_object='mysite.settings'):
         '[%(levelname)s] in %(module)s: %(message)s'
     )
     default_handler.setFormatter(formatter)
+
+    import os
+    app.config['SECRET_KEY'] = os.urandom(32)
 
     register_exensions(app)
     register_blueprints(app)
