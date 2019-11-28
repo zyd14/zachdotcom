@@ -74,5 +74,7 @@ def register_errorhandlers(app):
     return None
 
 if __name__ == '__main__':
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app = create_app()
     app.run()
