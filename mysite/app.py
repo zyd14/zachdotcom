@@ -69,6 +69,8 @@ def register_errorhandlers(app):
         app.errorhandler(errcode)(render_error)
     return None
 
+
+
 if __name__ == '__main__':
     app = create_app()
     app.run()

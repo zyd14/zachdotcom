@@ -5,5 +5,6 @@ blueprint = Blueprint("public", __name__, static_folder="../static", template_fo
 @blueprint.route("/", methods=["GET"])
 def home():
     current_app.logger.info('Got to home page')
-    return render_template('public/home.html')
+    page_content = current_app.config.get('CONTENT_MAP').load_page_content('public/home.html')
+    return render_template('public/home.html', **page_content)
 
