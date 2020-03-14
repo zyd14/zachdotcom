@@ -5,8 +5,6 @@ from flask import Flask, has_request_context, request, render_template
 from flask.logging import default_handler
 from flask_bootstrap import Bootstrap
 
-from mysite import public
-
 dictConfig({
     'version': 1,
     'formatters': {'default': {
@@ -36,7 +34,7 @@ class RequestFormatter(logging.Formatter):
         return super().format(record)
 
 
-def create_app(config_object='mysite.settings'):
+def create_app(config_object='flask_app.mysite.settings'):
     app = Flask('Zachdotcom')
     app.config.from_object(config_object)
     formatter = RequestFormatter(
@@ -51,6 +49,7 @@ def create_app(config_object='mysite.settings'):
     return app
 
 def register_blueprints(app):
+    import flask_app.mysite.public as public
     app.register_blueprint(public.views.blueprint)
 
 def register_exensions(app):
