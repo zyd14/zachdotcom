@@ -8,3 +8,6 @@ def home():
     page_content = current_app.config.get('CONTENT_MAP').load_page_content('public/home.html')
     return render_template('public/home.html', **page_content)
 
+@blueprint.route("/gardening", methods=["GET"])
+def gardening():
+    return render_template('public/gardening.html')
