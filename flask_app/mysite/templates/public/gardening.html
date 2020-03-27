@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Garden Section{% endblock %}
 
@@ -6,6 +7,18 @@
 <div class="container">
     <div class="page-header">
         <h1>{{ page_header }}</h1>
+    </div>
+
+    <div class="About">
+        <p><b>Gardening stuff</b></p>
+        {% for table in tables %}
+            {{ table|safe }}
+        {% endfor %}
+
+    </div>
+
+    <div class="show_data">
+
     </div>
 </div>
 {% endblock %}

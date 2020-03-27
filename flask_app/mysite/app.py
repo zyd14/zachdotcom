@@ -43,6 +43,9 @@ def create_app(config_object='flask_app.mysite.settings'):
     )
     default_handler.setFormatter(formatter)
 
+    import os
+    app.config['SECRET_KEY'] = os.urandom(32)
+
     register_exensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
@@ -72,4 +75,7 @@ def register_errorhandlers(app):
 
 if __name__ == '__main__':
     app = create_app()
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
     app.run()

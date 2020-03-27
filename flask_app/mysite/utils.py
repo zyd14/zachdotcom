@@ -1,5 +1,7 @@
 class PageContentMapper:
 
+    """ Holds variables to fill html templates with"""
+
     def __init__(self):
         self.content_map = {'public/home.html': {'page_header': 'Hello, welcome to my home page'}}
 
