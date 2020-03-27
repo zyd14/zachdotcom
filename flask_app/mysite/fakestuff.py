@@ -2,7 +2,8 @@ import pandas
 
 import os
 
-def mock_garden_log(path=''):
+
+def mock_garden_log(path: str='') -> pandas.DataFrame:
     if not path:
         path = os.path.join(os.path.split(os.path.realpath('__name__'))[0], 'test_files/garden_log.csv')
     df = pandas.read_csv(path)
