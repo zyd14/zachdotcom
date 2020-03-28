@@ -25,13 +25,14 @@
     </div>
 
     <div class="show_data">
-        <h2>Total of each plant type germinated</h2>
+        <h3>Total of each plant type germinated</h3>
         <div class=plant_germinated>
             {{ plant_totals|safe }}
         </div>
     </div>
 
     <div class="data_entry">
+        {{ form.csrf_token }}
         {{ wtf.quick_form(form) }}
     </div>
 </div>
