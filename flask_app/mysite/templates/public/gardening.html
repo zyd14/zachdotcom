@@ -3,15 +3,19 @@
 {% block title %}Garden Section{% endblock %}
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
-{% block page_content %}
+{% block content %}
 
 <div class="container">
     <div class="page-header">
         <h1>{{ page_header }}</h1>
     </div>
 
+    <div class="'weather-strip">
+
+    </div>
+
     <div class="About">
-        <h2>Gardening stuff</h2>
+        <h2>Gardening Log</h2>
             <div class=page_data>
                 {% for table in tables %}
                     {{ table|safe }}
@@ -21,7 +25,11 @@
     </div>
 
     <div class="show_data">
-
+        <h2>Total of each plant type germinated</h2>
+        <div class=plant_germinated>
+            {{ sorted_plant_totals|safe }}
+        </div>
     </div>
+
 </div>
 {% endblock %}

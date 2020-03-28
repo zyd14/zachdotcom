@@ -6,6 +6,7 @@ from flask import Blueprint, request, render_template, current_app
 
 
 from flask_app.mysite.fakestuff import mock_garden_log
+from flask_app.mysite.public import utils
 
 blueprint = Blueprint("public", __name__, static_folder="../static", template_folder="../templates")
 pd.set_option('max_colwidth', 40)
@@ -22,6 +23,26 @@ def home():
 @blueprint.route("/gardening", methods=["GET"])
 def gardening():
     path = os.path.join(os.path.split(os.path.split(os.path.dirname(os.path.realpath('__name__')))[0])[0], 'tests/test_files/garden_log.csv')
-    mock_df = mock_garden_log(path=path).replace(np.nan, 'Null').style.set_properties(**{'background-color': 'black','color': 'lawngreen','border-color': 'white'})
+    garden_df = mock_garden_log(path=path)
+    mock_df = garden_df.style.set_properties(**{'background-color': 'black','color': 'lawngreen','border-color': 'white'})
     tables = [mock_df.render()]
-    return render_template('public/gardening.html', tables=tables)
+
+    garden_df = utils.clean_column_names(garden_df)
+    plant_types = garden_df['type'].unique()
+    species_types = garden_df['species'].unique()
+
+
+
+    plant_totals = {'type': [],
+                    'total': []}
+    for p_type in plant_types:
+        df = garden_df[garden_df['type'] == p_type]['count']
+        plant_totals['type'].append(p_type)
+        plant_totals['total'].append(garden_df[garden_df['type'] == p_type]['count'])
+
+    plant_totals_df = pd.DataFrame(plant_totals)
+    #sorted_plant_totals = plant_totals_df.sort_values(by=['total'], axis=1)
+    #species_totals = {s_type: len(garden_df[garden_df['species'] == s_type]) for s_type in species_types}
+
+    return render_template('public/gardening.html', tables=tables, plant_totals=plant_totals,
+                           sorted_plant_totals=sorted_plant_totals)
