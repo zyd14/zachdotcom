@@ -1,9 +1,12 @@
+from functools import partial
 import numpy as np
 import os
 import pandas as pd
 
 from flask import Blueprint, request, render_template, current_app
-
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, IntegerField
+from wtforms.validators import DataRequired, ValidationError, AnyOf
 
 from flask_app.mysite.fakestuff import mock_garden_log
 from flask_app.mysite.public import utils
@@ -42,5 +45,16 @@ def gardening():
     #sorted_plant_totals = plant_totals_df.sort_values(by=['total'], axis=1)
     #species_totals = {s_type: len(garden_df[garden_df['species'] == s_type]) for s_type in species_types}
     plat_totals_styles = plant_totals_df.style.set_properties(**{'background-color': 'black', 'color': 'lawngreen', 'border-color': 'white'})
+    form = PlantCount()
+    return render_template('public/gardening.html', tables=tables, plant_totals=plat_totals_styles.render(), form=form)
 
-    return render_template('public/gardening.html', tables=tables, plant_totals=plat_totals_styles.render())
+from wtforms import StringField, Field, SubmitField, IntegerField, DateField, SelectField, ValidationError
+from datetime import datetime
+import pytz
+
+
+class PlantCount(FlaskForm):
+    species = StringField('Plant species', validators=[DataRequired])
+    count = IntegerField('Number of plants', validators=[DataRequired])
+    location = StringField('Indoor / Outdoor', default='Indoor', validators=[partial(AnyOf, values=['Indoor', 'Outdoor'])])
+    date = DateField(default=datetime.now(tz=pytz.timezone('UTC')))
