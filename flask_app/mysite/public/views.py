@@ -31,18 +31,16 @@ def gardening():
     plant_types = garden_df['type'].unique()
     species_types = garden_df['species'].unique()
 
-
-
     plant_totals = {'type': [],
                     'total': []}
     for p_type in plant_types:
         df = garden_df[garden_df['type'] == p_type]['count']
         plant_totals['type'].append(p_type)
-        plant_totals['total'].append(garden_df[garden_df['type'] == p_type]['count'])
+        plant_totals['total'].append(sum(int(p) for p in garden_df[garden_df['type'] == p_type]['count'].dropna()))
 
     plant_totals_df = pd.DataFrame(plant_totals)
     #sorted_plant_totals = plant_totals_df.sort_values(by=['total'], axis=1)
     #species_totals = {s_type: len(garden_df[garden_df['species'] == s_type]) for s_type in species_types}
+    plat_totals_styles = plant_totals_df.style.set_properties(**{'background-color': 'black', 'color': 'lawngreen', 'border-color': 'white'})
 
-    return render_template('public/gardening.html', tables=tables, plant_totals=plant_totals,
-                           sorted_plant_totals=sorted_plant_totals)
+    return render_template('public/gardening.html', tables=tables, plant_totals=plat_totals_styles.render())
