@@ -11,6 +11,7 @@ from flask_app.mysite.public import utils
 
 blueprint = Blueprint("public", __name__, static_folder="../static", template_folder="../templates")
 pd.set_option('max_colwidth', 60)
+#pd.set_option('max_rows', 30)
 pd.set_option('precision', 0)
 pd.set_option('chop_threshold', .5)
 
@@ -37,12 +38,12 @@ def gardening():
                 ('border', 'solid')
             ]
         ),
-        dict(
-            selector='td',
-            props=[
-                ('border', 'solid')
-            ]
-        )
+        # dict(
+        #     selector='td',
+        #     props=[
+        #         ('border', 'solid')
+        #     ]
+        # )
 
     ]
 
@@ -53,6 +54,7 @@ def gardening():
         .set_table_styles(styles)\
         .hide_index()
     tables = [garden_df_style.render()]
+    #tables = [garden_df.to_html(index=False)]
 
     plant_types = garden_df['type'].unique()
     species_types = garden_df['species'].unique()
