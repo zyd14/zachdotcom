@@ -46,41 +46,46 @@ def gardening():
         # )
 
     ]
-
+    plant_totals_df = calculate_totals(garden_df)
     out_df = garden_df.copy()
     out_df['count'] = out_df['count'].replace(np.nan, 'Null')
     garden_df_style = out_df.style\
         .set_properties(**{'background-color': 'white', 'color': 'black', 'border-color': 'grey'})\
         .set_table_styles(styles)\
         .hide_index()
-    tables = [garden_df_style.render()]
-    #tables = [garden_df.to_html(index=False)]
 
-    plant_types = garden_df['type'].unique()
-    species_types = garden_df['species'].unique()
+    tables = [garden_df.to_html(index=False).replace('dataframe', 'table table-striped')]
 
-    plant_totals = {'type': [],
-                    'total': []}
-    for p_type in plant_types:
-        df = garden_df[garden_df['type'] == p_type]['count']
-        plant_totals['type'].append(p_type)
-        plant_totals['total'].append(sum(int(p) for p in garden_df[garden_df['type'] == p_type]['count'].dropna()))
 
-    plant_totals_df = pd.DataFrame(plant_totals)
     #sorted_plant_totals = plant_totals_df.sort_values(by=['total'], axis=1)
     #species_totals = {s_type: len(garden_df[garden_df['species'] == s_type]) for s_type in species_types}
-    plant_totals_syntax = plant_totals_df.style.set_properties(**{'background-color': 'white', 'color': 'black', 'border-color': 'grey'}).hide_index()
-    plant_totals_syntax.background_gradient(subset=['total'], cmap='BuGn')
+    # plant_totals_syntax = plant_totals_df.style.set_properties(**{'background-color': 'white', 'color': 'black', 'border-color': 'grey'}).hide_index()
+    # plant_totals_syntax.background_gradient(subset=['total'], cmap='BuGn')
+    # plant_totals_df.style.background_gradient(subset=['total'], cmap='BuGn')
     form = PlantCount(request.form)
 
     if request.method == 'POST' and form.validate_on_submit():
-        return render_template('public/gardening.html', tables=tables, plant_totals=plant_totals_syntax.render(), form=form)
+        garden_df = add_plant_record(form, garden_df)
+        current_app.config['garden_df'] = garden_df
+        plant_totals_df = calculate_totals(garden_df)
+        return render_template('public/gardening.html', tables=tables, plant_totals=plant_totals_df.to_html().replace('dataframe', 'table table-striped'), form=form)
 
-    return render_template('public/gardening.html', tables=tables, plant_totals=plant_totals_syntax.render(), form=form)
+    return render_template('public/gardening.html', tables=tables, plant_totals=plant_totals_df.to_html(index=False).replace('dataframe', 'table table-striped'), form=form)
 
 from wtforms import StringField, Form, Field, SubmitField, IntegerField, DateField, SelectField, ValidationError
 from datetime import datetime
 import pytz
+
+def calculate_totals(garden_df: pd.DataFrame) -> pd.DataFrame:
+    plant_types = garden_df['type'].unique()
+
+    plant_totals = {'type': [],
+                    'total': []}
+    for p_type in plant_types:
+        plant_totals['type'].append(p_type)
+        plant_totals['total'].append(sum(int(p) for p in garden_df[garden_df['type'] == p_type]['count'].dropna()))
+
+    return pd.DataFrame(plant_totals)
 
 def load_init_df() -> pd.DataFrame:
     path = os.path.join(os.path.split(os.path.split(os.path.dirname(os.path.realpath('__name__')))[0])[0],
@@ -98,12 +103,23 @@ def convert_to_int(x):
         return x
 
 def add_plant_record(form: FlaskForm, df: pd.DataFrame) -> pd.DataFrame:
-    pass
+    new_row = pd.DataFrame({'type': [form.data['plant_type']],
+               'species': [form.data['species']],
+               'count': [form.data['count']],
+               'germinated': [form.data['germinated']],
+               'location': [form.data['location']],
+               'date_started': [form.data['date_started']],
+               'last_updated': [form.data['date_updated']]})
 
+    return pd.concat([df, new_row], ignore_index=True)
 
 class PlantCount(FlaskForm):
+    plant_type = StringField('Family of plant', validators=[DataRequired()])
     species = StringField('Plant species', validators=[DataRequired()])
     count = IntegerField('Number of plants', validators=[DataRequired()])
-    location = StringField('Indoor / Outdoor', default='Indoor', validators=[partial(AnyOf, values=['Indoor', 'Outdoor'])()])
-    date = DateField(default=datetime.now(tz=pytz.timezone('UTC')))
+    location = StringField('Indoor / Outdoor', default='Indoor', validators=[partial(AnyOf, ['Indoor', 'Outdoor'])])
+    date_started = DateField(default=datetime.now(tz=pytz.timezone('UTC')))
+    date_updated = DateField(default=datetime.now(tz=pytz.timezone('UTC')))
+    storage_method = StringField('How seeds were stored', default='Store', validators=[partial(AnyOf, ['Saved', 'Store'])])
+    germinated = IntegerField('Total number germinated', validators=[DataRequired()])
     submit = SubmitField(label='Submit')

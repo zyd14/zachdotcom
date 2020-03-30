@@ -37,9 +37,15 @@
         </div>
     </div>
 
+    <strong>Record a new plant count</strong>
+
     <div class="container" id="data_entry">
-        {{ form.csrf_token }}
-        {{ wtf.quick_form(form) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.csrf_token }}
+                {{ wtf.quick_form(form) }}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
