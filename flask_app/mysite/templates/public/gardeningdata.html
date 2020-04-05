@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% block title %}Garden Section{% endblock %}
+{% block title %}Garden Data{% endblock %}
 
 {% block styles %}
 {{super()}}
@@ -41,7 +41,7 @@
 
     <div class="container" id="data_entry">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 {{ form.csrf_token }}
                 {{ wtf.quick_form(form) }}
             </div>

@@ -68,9 +68,9 @@ def gardening():
         garden_df = add_plant_record(form, garden_df)
         current_app.config['garden_df'] = garden_df
         plant_totals_df = calculate_totals(garden_df)
-        return render_template('public/gardening.html', tables=tables, plant_totals=plant_totals_df.to_html().replace('dataframe', 'table table-striped'), form=form)
+        return render_template('public/gardeningdata.html', tables=tables, plant_totals=plant_totals_df.to_html().replace('dataframe', 'table table-striped'), form=form)
 
-    return render_template('public/gardening.html', tables=tables, plant_totals=plant_totals_df.to_html(index=False).replace('dataframe', 'table table-striped'), form=form)
+    return render_template('public/gardeningdata.html', tables=tables, plant_totals=plant_totals_df.to_html(index=False).replace('dataframe', 'table table-striped'), form=form)
 
 from wtforms import StringField, Form, Field, SubmitField, IntegerField, DateField, SelectField, ValidationError
 from datetime import datetime
