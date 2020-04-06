@@ -35,8 +35,8 @@ class RequestFormatter(logging.Formatter):
 
 
 def create_app(config_object='flask_app.mysite.settings'):
-    app = Flask('Zachdotcom')
-    app.config.from_object(config_object)
+    _app = Flask('Zachdotcom')
+    _app.config.from_object(config_object)
     formatter = RequestFormatter(
         '[%(asctime)s] [%(remote_addr)s] requested %(url)s\n'
         '[%(levelname)s] in %(module)s: %(message)s'
@@ -44,21 +44,24 @@ def create_app(config_object='flask_app.mysite.settings'):
     default_handler.setFormatter(formatter)
 
     import os
-    app.config['SECRET_KEY'] = os.urandom(32)
+    _app.config['SECRET_KEY'] = os.urandom(32)
 
-    register_exensions(app)
-    register_blueprints(app)
-    register_errorhandlers(app)
+    register_exensions(_app)
+    register_blueprints(_app)
+    register_errorhandlers(_app)
     return app
 
-def register_blueprints(app):
+
+def register_blueprints(this_app):
     import flask_app.mysite.public as public
-    app.register_blueprint(public.views.blueprint)
+    this_app.register_blueprint(public.views.blueprint)
 
-def register_exensions(app):
-    Bootstrap(app)
 
-def register_errorhandlers(app):
+def register_exensions(this_app):
+    Bootstrap(this_app)
+
+
+def register_errorhandlers(this_app):
     """Register error handlers."""
 
     def render_error(error):
@@ -68,9 +71,8 @@ def register_errorhandlers(app):
         return render_template(f"{error_code}.html"), error_code
 
     for errcode in [401, 404, 500]:
-        app.errorhandler(errcode)(render_error)
+        this_app.errorhandler(errcode)(render_error)
     return None
-
 
 
 if __name__ == '__main__':
