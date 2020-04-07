@@ -42,7 +42,7 @@ def get_open_weather_map():
 
 def dump_to_file(req: Request):
     now = get_file_date()
-    with open(f'dumps/test_open_weather_dump_{now}.txt', 'w') as d_out:
+    with open(f'../dumps/test_open_weather_dump_{now}.txt', 'w') as d_out:
         d_out.write(req.text)
 
 def init_weather_db():
