@@ -23,12 +23,10 @@ dictConfig({
 
 
 
-
-
 def create_app(config_object='flask_app.mysite.settings'):
     _app = Flask('Zachdotcom')
     _app.config.from_object(config_object)
-    register_exensions(_app)
+    register_extensions(_app)
     register_blueprints(_app)
     register_errorhandlers(_app)
     return app
@@ -39,7 +37,7 @@ def register_blueprints(this_app):
     this_app.register_blueprint(public.views.blueprint)
 
 
-def register_exensions(this_app):
+def register_extensions(this_app):
     Bootstrap(this_app)
     PyMongo(app)
 

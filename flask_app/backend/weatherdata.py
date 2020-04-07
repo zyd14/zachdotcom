@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+import os
 
 from flask import Request
 from pymongo import MongoClient
@@ -15,7 +16,6 @@ def get_weather_nws():
     req = requests.get("https://national-weather-service.p.rapidapi.com/stations",
                        headers={"x-rapidapi-host": "national-weather-service.p.rapidapi.com",
                                 "x-rapidapi-key": "f6e50008e6mshdf2ebe445cd3e74p145b4fjsnaa068668587d"})
-    print(req)
     content = req.content.decode('utf-8')
     import json
     content_loaded = json.loads(content.replace('\n', ''))
@@ -34,10 +34,13 @@ def get_open_weather_map():
     data = json.loads(req.text)
 
     openweather = get_weather_db()
-    dumps = openweather['dumps']
+    dumps = openweather['dumps']  # gets collection from database that we can insert documents into
     m_id = dumps.insert_one(data).inserted_id
+    for x in dumps.find():
+        print(x)
 
-    dump_to_file(req)
+    if os.getenv('BACKUP_WEATHER', False):
+        dump_to_file(req)
 
 
 def dump_to_file(req: Request):
@@ -51,7 +54,7 @@ def init_weather_db():
 
 def get_weather_db():
     client = MongoClient()
-    weather_db = client['weather_data']
+    weather_db = client['weather_data']  # Gets database
     return weather_db
 
 
