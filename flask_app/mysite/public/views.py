@@ -14,9 +14,6 @@ pd.set_option('max_colwidth', 60)
 pd.set_option('precision', 0)
 pd.set_option('chop_threshold', .5)
 
-GARDEN_LOG_PATH = os.path.join(os.path.split(os.path.split(os.path.dirname(os.path.realpath('__name__')))[0])[0],
-                               'tests/test_files/garden_log.csv')
-
 
 @blueprint.route("/", methods=["GET"])
 def home():
@@ -79,3 +76,6 @@ def gardening():
                                                                                      'table table-striped'), form=form)
 
 
+@blueprint.route("/gardening/blog", methods=["GET", "POST"])
+def garden_blog():
+    pass

@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 from flask import current_app
 from flask_wtf import FlaskForm
@@ -5,7 +7,9 @@ from pandas import DataFrame
 from pymongo import MongoClient
 
 from flask_app.mysite.fakestuff import mock_garden_log
-from flask_app.mysite.public.views import GARDEN_LOG_PATH
+
+GARDEN_LOG_PATH = os.path.join(os.path.split(os.path.split(os.path.dirname(os.path.realpath('__name__')))[0])[0],
+                               'tests/test_files/garden_log.csv')
 
 
 def clean_column_names(df: DataFrame) -> DataFrame:
@@ -16,7 +20,7 @@ def clean_column_names(df: DataFrame) -> DataFrame:
 def convert_to_int(x):
     try:
         return int(x)
-    except Exception as exc:
+    except Exception:
         return x
 
 
@@ -49,7 +53,7 @@ def calculate_totals(garden_df: pd.DataFrame) -> pd.DataFrame:
 
 def load_init_df() -> pd.DataFrame:
     garden_df = mock_garden_log(path=GARDEN_LOG_PATH)
-    garden_df = utils.clean_column_names(garden_df)
+    garden_df = clean_column_names(garden_df)
     current_app.config['garden_df'] = garden_df
     garden_df['count'] = garden_df['count'].apply(convert_to_int)
     return garden_df

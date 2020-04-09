@@ -29,7 +29,7 @@ def create_app(config_object='flask_app.mysite.settings'):
     register_extensions(_app)
     register_blueprints(_app)
     register_errorhandlers(_app)
-    return app
+    return _app
 
 
 def register_blueprints(this_app):
@@ -39,7 +39,7 @@ def register_blueprints(this_app):
 
 def register_extensions(this_app):
     Bootstrap(this_app)
-    PyMongo(app)
+    PyMongo(this_app)
 
 
 def register_errorhandlers(this_app):
