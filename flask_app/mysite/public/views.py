@@ -1,18 +1,12 @@
-from datetime import datetime
-from functools import partial
 import os
 
 from flask import Blueprint, request, render_template, current_app
-from flask_wtf import FlaskForm
 import numpy as np
 import pandas as pd
-from pymongo import MongoClient
-import pytz
-from wtforms import StringField, SubmitField, IntegerField, DateField
-from wtforms.validators import DataRequired, AnyOf
 
-from flask_app.mysite.fakestuff import mock_garden_log
-from flask_app.mysite.public import utils
+from flask_app.mysite.public.forms import PlantCount
+from flask_app.mysite.public.utils import save_collection_entry, calculate_totals, load_init_df, \
+    add_plant_record
 
 blueprint = Blueprint("public", __name__, static_folder="../static", template_folder="../templates")
 pd.set_option('max_colwidth', 60)
@@ -73,7 +67,7 @@ def gardening():
 
     if request.method == 'POST' and form.validate_on_submit():
         garden_df = add_plant_record(form, garden_df)
-
+        save_collection_entry('count_records', form.data)
         current_app.config['garden_df'] = garden_df
         plant_totals_df = calculate_totals(garden_df)
         return render_template('public/gardeningdata.html', tables=tables,
@@ -85,68 +79,3 @@ def gardening():
                                                                                      'table table-striped'), form=form)
 
 
-def save_plant_entry(entry: pd.DataFrame):
-    client = MongoClient()
-    plant_count_db = client['plant_count_db']
-    plant_count_col = plant_count_db['counts']
-    plant_count_col.insert_one({'data': entry.to_dict(orient='records')})
-
-
-def get_all_plant_entries():
-    client = MongoClient()
-    plant_count_db = client['plant_count_db']
-    plant_count_col = plant_count_db['counts']
-
-    pd.concat([record['data'] for record in plant_count_col.find()])
-
-
-def calculate_totals(garden_df: pd.DataFrame) -> pd.DataFrame:
-    plant_types = garden_df['type'].unique()
-
-    plant_totals = {'type': [],
-                    'total': []}
-    for p_type in plant_types:
-        plant_totals['type'].append(p_type)
-        plant_totals['total'].append(sum(int(p) for p in garden_df[garden_df['type'] == p_type]['count'].dropna()))
-
-    return pd.DataFrame(plant_totals)
-
-
-def load_init_df() -> pd.DataFrame:
-    garden_df = mock_garden_log(path=GARDEN_LOG_PATH)
-    garden_df = utils.clean_column_names(garden_df)
-    current_app.config['garden_df'] = garden_df
-    garden_df['count'] = garden_df['count'].apply(convert_to_int)
-    return garden_df
-
-
-def convert_to_int(x):
-    try:
-        return int(x)
-    except Exception as exc:
-        return x
-
-
-def add_plant_record(form: FlaskForm, df: pd.DataFrame) -> pd.DataFrame:
-    new_row = pd.DataFrame({'type': [form.data['plant_type']],
-                            'species': [form.data['species']],
-                            'count': [form.data['count']],
-                            'germinated': [form.data['germinated']],
-                            'location': [form.data['location']],
-                            'date_started': [form.data['date_started']],
-                            'last_updated': [form.data['date_updated']]})
-
-    return pd.concat([df, new_row], ignore_index=True)
-
-
-class PlantCount(FlaskForm):
-    plant_type = StringField('Family of plant', validators=[DataRequired()])
-    species = StringField('Plant species', validators=[DataRequired()])
-    count = IntegerField('Number of plants', validators=[DataRequired()])
-    location = StringField('Indoor / Outdoor', default='Indoor', validators=[partial(AnyOf, ['Indoor', 'Outdoor'])])
-    date_started = DateField(default=datetime.now(tz=pytz.timezone('UTC')))
-    date_updated = DateField(default=datetime.now(tz=pytz.timezone('UTC')))
-    storage_method = StringField('How seeds were stored', default='Store',
-                                 validators=[partial(AnyOf, ['Saved', 'Store'])])
-    germinated = IntegerField('Total number germinated', validators=[DataRequired()])
-    submit = SubmitField(label='Submit')
