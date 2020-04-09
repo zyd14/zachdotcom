@@ -1,9 +1,9 @@
-import logging
 from logging.config import dictConfig
 
-from flask import Flask, has_request_context, request, render_template
-from flask.logging import default_handler
+from flask import Flask, render_template
+
 from flask_bootstrap import Bootstrap
+from flask_pymongo import PyMongo
 
 dictConfig({
     'version': 1,
@@ -22,43 +22,27 @@ dictConfig({
 })
 
 
-class RequestFormatter(logging.Formatter):
-    def format(self, record):
-        if has_request_context():
-            record.url = request.url
-            record.remote_addr = request.remote_addr
-        else:
-            record.url = None
-            record.remote_addr = None
-
-        return super().format(record)
-
 
 def create_app(config_object='flask_app.mysite.settings'):
-    app = Flask('Zachdotcom')
-    app.config.from_object(config_object)
-    formatter = RequestFormatter(
-        '[%(asctime)s] [%(remote_addr)s] requested %(url)s\n'
-        '[%(levelname)s] in %(module)s: %(message)s'
-    )
-    default_handler.setFormatter(formatter)
-
-    import os
-    app.config['SECRET_KEY'] = os.urandom(32)
-
-    register_exensions(app)
-    register_blueprints(app)
-    register_errorhandlers(app)
+    _app = Flask('Zachdotcom')
+    _app.config.from_object(config_object)
+    register_extensions(_app)
+    register_blueprints(_app)
+    register_errorhandlers(_app)
     return app
 
-def register_blueprints(app):
+
+def register_blueprints(this_app):
     import flask_app.mysite.public as public
-    app.register_blueprint(public.views.blueprint)
+    this_app.register_blueprint(public.views.blueprint)
 
-def register_exensions(app):
-    Bootstrap(app)
 
-def register_errorhandlers(app):
+def register_extensions(this_app):
+    Bootstrap(this_app)
+    PyMongo(app)
+
+
+def register_errorhandlers(this_app):
     """Register error handlers."""
 
     def render_error(error):
@@ -68,14 +52,10 @@ def register_errorhandlers(app):
         return render_template(f"{error_code}.html"), error_code
 
     for errcode in [401, 404, 500]:
-        app.errorhandler(errcode)(render_error)
+        this_app.errorhandler(errcode)(render_error)
     return None
-
 
 
 if __name__ == '__main__':
     app = create_app()
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
     app.run()

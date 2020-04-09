@@ -1,7 +1,9 @@
 
-def test_setup_app_manual():
-    from flask_app.mysite.app import create_app, RequestFormatter
-    create_app()
-    from flask.logging import default_handler
-    
-    assert isinstance(default_handler.formatter, RequestFormatter)
+from flask_app.backend.weatherdata import get_weather_db
+
+class TestMongoClient:
+
+
+    def test_get_weather_db(self):
+        data = get_weather_db()
+        assert data
