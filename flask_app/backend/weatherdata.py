@@ -2,14 +2,16 @@ from dataclasses import dataclass
 from datetime import datetime
 import os
 
-from flask import Request
+from flask import Response
 from pymongo import MongoClient
 from pytz import timezone
 import requests
 
+
 @dataclass
 class OpenWeatherData:
     pass
+
 
 def get_weather_nws():
     """ Only returns data in html format"""
@@ -43,14 +45,16 @@ def get_open_weather_map():
         dump_to_file(req)
 
 
-def dump_to_file(req: Request):
+def dump_to_file(req: Response):
     now = get_file_date()
     with open(f'../dumps/test_open_weather_dump_{now}.txt', 'w') as d_out:
         d_out.write(req.text)
 
+
 def init_weather_db():
     client = MongoClient()
     weather_db = client.weather_data
+
 
 def get_weather_db():
     client = MongoClient()
@@ -60,6 +64,7 @@ def get_weather_db():
 
 def get_file_date():
     return datetime.now(tz=timezone('UCT'))
+
 
 if __name__ == '__main__':
     get_open_weather_map()
