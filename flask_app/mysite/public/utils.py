@@ -50,6 +50,10 @@ def calculate_totals(garden_df: pd.DataFrame) -> pd.DataFrame:
 
     return pd.DataFrame(plant_totals)
 
+class DataInitializer:
+
+    def load_init_df(self):
+        pass
 
 def load_init_df() -> pd.DataFrame:
     garden_df = mock_garden_log(path=GARDEN_LOG_PATH)
@@ -58,6 +62,8 @@ def load_init_df() -> pd.DataFrame:
     garden_df['count'] = garden_df['count'].apply(convert_to_int)
     return garden_df
 
+def load_init_df_mongo() -> pd.DataFrame:
+    pass
 
 def add_plant_record(form: FlaskForm, df: pd.DataFrame) -> pd.DataFrame:
     new_row = pd.DataFrame({'type': [form.data['plant_type']],

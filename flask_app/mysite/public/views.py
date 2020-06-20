@@ -22,6 +22,13 @@ def home():
     return render_template('public/home.html', **page_content)
 
 
+@blueprint.route('/blog', methods=['GET'])
+def blog():
+    current_app.logger.info(['Got to blog page'])
+    page_content = current_app.config.get('CONTENT_MAP').load_page_content('public/blog.html')
+    return render_template('public/blog.html', **page_content)
+
+
 @blueprint.route("/gardening", methods=["GET", "POST"])
 def gardening():
     if 'garden_df' not in current_app.config:

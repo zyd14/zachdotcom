@@ -9,7 +9,7 @@ ENV = os.getenv('ZACHDOTCOM_ENV', 'dev')
 DEBUG = os.getenv('ZACHDOTCOM_DEBUG', True)
 CONTENT_MAP = PageContentMapper()
 SECRET_KEY = os.urandom(32)
-MONGO_URI = 'mongodb://localhost:27017/weatherdata'
+MONGO_URI = 'mongodb://localhost:27017/'
 
 
 class RequestFormatter(logging.Formatter):
