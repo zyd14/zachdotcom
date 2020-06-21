@@ -8,10 +8,22 @@
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 {% endblock %}
 
-{% block page_content %}
-<div class="container">
+{% block content %}
+<div class="container" id="header">
     <div class="page-header">
         <h1>{{ page_header }}</h1>
+    </div>
+
+    <div class="container-fluid" id="blog-strip">
+
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Blog</h2>
+            <div class="post">
+                {{ blog|safe }}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

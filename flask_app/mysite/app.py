@@ -4,6 +4,7 @@ from flask import Flask, render_template
 
 from flask_bootstrap import Bootstrap
 from flask_pymongo import PyMongo
+from flaskext.markdown import Markdown
 
 dictConfig({
     'version': 1,
@@ -40,7 +41,7 @@ def register_blueprints(this_app):
 def register_extensions(this_app):
     Bootstrap(this_app)
     PyMongo(this_app)
-
+    Markdown(this_app)
 
 def register_errorhandlers(this_app):
     """Register error handlers."""

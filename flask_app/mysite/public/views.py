@@ -1,6 +1,8 @@
 import os
 
-from flask import Blueprint, request, render_template, current_app
+from flask import Blueprint, request, render_template, current_app, send_from_directory
+import markdown
+import markdown.extensions.fenced_code
 import numpy as np
 import pandas as pd
 
@@ -26,6 +28,11 @@ def home():
 def blog():
     current_app.logger.info(['Got to blog page'])
     page_content = current_app.config.get('CONTENT_MAP').load_page_content('public/blog.html')
+    blog_path = current_app.config.get('BLOG_POSTS')
+    blog_in = open(os.path.join(blog_path, 'post1.md'), 'r').read()
+    blog_md = markdown.markdown(blog_in, output_format='html4')
+
+    page_content.update(blog=blog_md)
     return render_template('public/blog.html', **page_content)
 
 
