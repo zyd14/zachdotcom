@@ -1,5 +1,5 @@
 This is a first blog post to explain the technologies used to create 
-this website. The main purpose of creating this website was to explore
+this website. The main purpose of creating this website is to explore
 how to use tools related to web hosting and get a better overall handle
 on the different components used to run a website.  I've been working in
 backend software / data engineering for a little over 4 years, and felt 

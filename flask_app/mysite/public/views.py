@@ -12,27 +12,44 @@ from flask_app.mysite.public.utils import save_collection_entry, calculate_total
 
 blueprint = Blueprint("public", __name__, static_folder="../static", template_folder="../templates")
 pd.set_option('max_colwidth', 60)
-# pd.set_option('max_rows', 30)
 pd.set_option('precision', 0)
 pd.set_option('chop_threshold', .5)
+
+import jinja2
+
+def add_blog_to_page(file_name: str, page_key: str, page_content: dict, blog_path: str='') -> dict:
+    if not blog_path:
+        blog_path = current_app.config.get('BLOG_POSTS')
+    blog_in = open(os.path.join(blog_path, file_name), 'r').read()
+    blog_md = markdown.markdown(blog_in, output_format='html4')
+
+    if page_key in page_content:
+        current_app.logger.info(f'Value for page_key {page_key} already exists in page_content. Value will be overridden')
+
+    page_content.update({page_key: blog_md})
+    return page_content
 
 
 @blueprint.route("/", methods=["GET"])
 def home():
     current_app.logger.info('Got to home page')
     page_content = current_app.config.get('CONTENT_MAP').load_page_content('public/home.html')
+    page_content = add_blog_to_page(file_name='home1.md', page_key='home_blurb', page_content=page_content)
+
     return render_template('public/home.html', **page_content)
+
+@blueprint.route('/about_me', methods=['GET'])
+def about_me():
+    current_app.logger.info(['Got to about_me page'])
+    page_content = current_app.config.get('CONTET_MAP').load_page_content('public.about_me.html')
 
 
 @blueprint.route('/blog', methods=['GET'])
 def blog():
     current_app.logger.info(['Got to blog page'])
     page_content = current_app.config.get('CONTENT_MAP').load_page_content('public/blog.html')
-    blog_path = current_app.config.get('BLOG_POSTS')
-    blog_in = open(os.path.join(blog_path, 'post1.md'), 'r').read()
-    blog_md = markdown.markdown(blog_in, output_format='html4')
+    page_content = add_blog_to_page(file_name='post1.md', page_key='blog', page_content=page_content)
 
-    page_content.update(blog=blog_md)
     return render_template('public/blog.html', **page_content)
 
 

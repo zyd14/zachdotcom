@@ -1,4 +1,10 @@
+import datetime as dt
+import logging
 from logging.config import dictConfig
+
+from flask import has_request_context, request
+from flask.logging import default_handler
+import logging
 
 from flask import Flask, render_template
 
@@ -6,21 +12,22 @@ from flask_bootstrap import Bootstrap
 from flask_pymongo import PyMongo
 from flaskext.markdown import Markdown
 
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'INFO',
-        'handlers': ['wsgi']
-    }
-})
+
+dictConfig({'version': 1,
+            'formatters': {'default': {
+                'class': 'flask_app.mysite.settings.RequestFormatter',
+                'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+            }},
+            'handlers': {'wsgi': {
+                'class': 'logging.StreamHandler',
+                'stream': 'ext://flask.logging.wsgi_errors_stream',
+                'formatter': 'default'
+            }},
+            'root': {
+                'level': 'INFO',
+                'handlers': ['wsgi']
+            }
+        })
 
 
 
@@ -30,6 +37,11 @@ def create_app(config_object='flask_app.mysite.settings'):
     register_extensions(_app)
     register_blueprints(_app)
     register_errorhandlers(_app)
+    _app.logger.info('creating')
+
+    _app.logger.info('sles')
+    _app.logger.info('another')
+
     return _app
 
 
@@ -42,6 +54,7 @@ def register_extensions(this_app):
     Bootstrap(this_app)
     PyMongo(this_app)
     Markdown(this_app)
+
 
 def register_errorhandlers(this_app):
     """Register error handlers."""
@@ -59,4 +72,5 @@ def register_errorhandlers(this_app):
 
 if __name__ == '__main__':
     app = create_app()
+    app.logger.info('again')
     app.run()
