@@ -6,7 +6,9 @@ class PageContentMapper:
 
     def __init__(self):
         self.content_map = {'public/home.html': {'page_header': 'Hello!'},
-                            'public/blog.html': {'page_header': 'Thoughts and Musings'}}
+                            'public/blog.html': {'page_header': 'Thoughts and Musings'},
+                            'public/about_me.html': {'page_header': 'A little bit about me',
+                                                    'blog_post1': 'aboutme.md'}}
 
     def load_page_content(self, page_ref):
         return self.content_map[page_ref]

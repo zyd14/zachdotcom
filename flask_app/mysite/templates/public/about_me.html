@@ -3,5 +3,20 @@
 
 {% block page_content %}
 <div class="container">
-    <div class="page-header"></div>
+    <div class="page-header">
+        <h1>{{ page_header }}</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="post" id="aboutme-blurb">
+                {{ aboutme_blurb|safe }}
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="sidebar" id="aboutme-sidebar">
+                {{ aboutme_sidebar|safe }}
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}

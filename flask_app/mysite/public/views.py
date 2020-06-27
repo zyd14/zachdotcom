@@ -15,11 +15,31 @@ pd.set_option('max_colwidth', 60)
 pd.set_option('precision', 0)
 pd.set_option('chop_threshold', .5)
 
-import jinja2
 
-def add_blog_to_page(file_name: str, page_key: str, page_content: dict, blog_path: str='') -> dict:
+def add_blog_to_page(page_key: str, page_content: dict, file_name: str='', content_key: str='blog_post1', blog_path: str='') -> dict:
+    """ Retrieve configuration defining where blog post is located and read it in as markdown, then render to page.
+
+    Args:
+        page_key:
+        page_content:
+        file_name:
+        content_key:
+        blog_path:
+
+    Returns:
+        dict of values to fill page template with
+    """
+
+    # Retrieve default blog path and file name if they weren't provided by caller
     if not blog_path:
         blog_path = current_app.config.get('BLOG_POSTS')
+    if not file_name:
+        try:
+            file_name = page_content[content_key]
+        except KeyError as ke:
+            current_app.logger.exception(f'Exception occurred when finding post with key "{content_key}")')
+            raise ke
+
     blog_in = open(os.path.join(blog_path, file_name), 'r').read()
     blog_md = markdown.markdown(blog_in, output_format='html4')
 
@@ -38,10 +58,13 @@ def home():
 
     return render_template('public/home.html', **page_content)
 
+
 @blueprint.route('/about_me', methods=['GET'])
 def about_me():
     current_app.logger.info(['Got to about_me page'])
-    page_content = current_app.config.get('CONTET_MAP').load_page_content('public.about_me.html')
+    page_content = current_app.config.get('CONTENT_MAP').load_page_content('public/about_me.html')
+    page_content = add_blog_to_page(page_key='aboutme_blurb', page_content=page_content)
+    return render_template('public/about_me.html', **page_content)
 
 
 @blueprint.route('/blog', methods=['GET'])
