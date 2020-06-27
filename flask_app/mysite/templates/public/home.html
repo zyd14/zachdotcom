@@ -7,6 +7,17 @@
 <div class="container">
     <div class="page-header">
         <h1>{{ page_header }}</h1>
+        </div>
+    <div class="container-fluid" id="home-strip">
+
+    </div>
+     <div class="row">
+        <div class="col-md-8">
+            <div class="post" id="home_blurb">
+                {{ home_blurb|safe }}
+                <p>Check out my <a href="{{ url_for('public.blog') }}">blog posts</a></p>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
