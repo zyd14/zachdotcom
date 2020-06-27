@@ -45,7 +45,7 @@ def add_blog_to_page(page_key: str, page_content: dict, file_name: str='', conte
 
     if page_key in page_content:
         current_app.logger.info(f'Value for page_key {page_key} already exists in page_content. Value will be overridden')
-
+    current_app.logger.info(f'page_key: {page_key}')
     page_content.update({page_key: blog_md})
     return page_content
 
@@ -63,7 +63,9 @@ def home():
 def about_me():
     current_app.logger.info(['Got to about_me page'])
     page_content = current_app.config.get('CONTENT_MAP').load_page_content('public/about_me.html')
-    page_content = add_blog_to_page(page_key='aboutme_blurb', page_content=page_content)
+    page_content = add_blog_to_page(page_key='sidebar', page_content=page_content, content_key='sidebar')
+    page_content = add_blog_to_page(page_key='aboutme_blurb', page_content=page_content, content_key='blog_post1')
+    current_app.logger.info(f'page_content: {page_content.keys()}')
     return render_template('public/about_me.html', **page_content)
 
 

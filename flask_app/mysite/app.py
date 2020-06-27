@@ -37,10 +37,6 @@ def create_app(config_object='flask_app.mysite.settings'):
     register_extensions(_app)
     register_blueprints(_app)
     register_errorhandlers(_app)
-    _app.logger.info('creating')
-
-    _app.logger.info('sles')
-    _app.logger.info('another')
 
     return _app
 
@@ -72,5 +68,4 @@ def register_errorhandlers(this_app):
 
 if __name__ == '__main__':
     app = create_app()
-    app.logger.info('again')
-    app.run()
+    app.run(debug=True)

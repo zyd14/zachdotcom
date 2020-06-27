@@ -52,5 +52,5 @@ need to fix your deployment process.
 
 ### Connect
 Check out my [linkedIn profile](https://www.linkedin.com/in/zachary-romer/)  
-Give me a shout at romerzs14@gmail.com if you'd like to connect more directly
- 
+Github: 
+Give me a shout at romerzs14@gmail.com if you'd like to connect more directly  
