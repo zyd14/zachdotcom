@@ -47,10 +47,4 @@ test, while leaving most if not all logic out of the data classes.  It also grea
 object creation components.  
 
 I believe in automated deployments, and deploying on Fridays. If you aren't comfortable enough to deploy on a Friday you 
-need to fix your deployment process.
-
-
-### Connect
-Check out my [linkedIn profile](https://www.linkedin.com/in/zachary-romer/)  
-Github: 
-Give me a shout at romerzs14@gmail.com if you'd like to connect more directly  
+need to fix your deployment process.  

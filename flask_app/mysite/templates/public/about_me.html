@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block title %}zachdotcom{% endblock %}
 
+
+
 {% block page_content %}
 <div class="container">
     <div class="page-header">
@@ -10,14 +12,20 @@
         <div class="col-md-8">
             <div class="post" id="aboutme-blurb">
                 {{ aboutme_blurb|safe }}
-                <a class="btn btn-block btn-social btn-github">
-                  <span class="fa fa-github"></span>Github
-                </a>
             </div>
         </div>
         <div class="col-md-4">
             <div class="sidebar" id="aboutme-sidebar">
                 {{ sidebar|safe }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="contact" id="contact">
+                <h3>Connect</h3>
+                <a href="https://github.com/zyd14"> <img src="https://cdn.iconscout.com/icon/free/png-256/github-153-675523.png" srcset="https://cdn.iconscout.com/icon/free/png-256/github-153-675523.png 2x" alt="Github Link" width="10%"></a>
+                <a href="https://www.linkedin.com/in/zachary-romer/"> <img src="https://image.flaticon.com/icons/svg/174/174857.svg" alt="Linkedin" width="10%"></a>
             </div>
         </div>
     </div>
